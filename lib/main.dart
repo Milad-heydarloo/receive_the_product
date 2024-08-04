@@ -365,7 +365,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                           bool hasHurryProduct = locationModel.listPS
                               .any((product) => product.hurry);
                           return Marker(
-                            width: calculateTextWidth(locationModel.companyname+'نام مجموعه : ') + 55,
+                            width: calculateTextWidth(locationModel.companyname+'نام مجموعه : ') + 59,
 
                             height: 150,
                             point: locationModel.position,
