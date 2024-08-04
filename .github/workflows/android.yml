@@ -41,4 +41,4 @@ jobs:
           file: release/app-release.apk
           tag: v1.0
           overwrite: true
-          body: "This is the first release" 
+          body: "This is the first release"
