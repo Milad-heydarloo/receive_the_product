@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'کارشناسان خرید و فروش',
+      title: 'دریافت کالا ساتر',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         fontFamily: 'vazir',
