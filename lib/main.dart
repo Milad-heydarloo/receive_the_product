@@ -1,4 +1,4 @@
-
+import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -18,11 +18,103 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      title: 'مسول دریافت کالا های در صف دریافت',
+      title: 'کارشناسان خرید و فروش',
       debugShowCheckedModeBanner: false,
-      home: LocationPickerScreen(),
+      theme: ThemeData(
+        fontFamily: 'vazir',
+        primarySwatch: Colors.blue,
+        primaryColor: Colors.blue,
+        hintColor: Colors.black,
+        scaffoldBackgroundColor: Colors.white,
+        appBarTheme: AppBarTheme(
+          color: Colors.blue,
+          titleTextStyle: TextStyle(color: Colors.white, fontSize: 20),
+        ),
+        buttonTheme: ButtonThemeData(
+          buttonColor: Colors.blue, // رنگ دکمه‌ها
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.blue,
+          ),
+        ),
+        textButtonTheme: TextButtonThemeData(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.blue, // رنگ دکمه‌های متنی
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            foregroundColor: Colors.blue, // رنگ دکمه‌های مرزی
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: Colors.blue,
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: Colors.blue,
+            ),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8.0),
+            borderSide: BorderSide(
+              color: Colors.blueAccent,
+            ),
+          ),
+        ),
+        // textTheme: TextTheme(
+        //   headline1: TextStyle(
+        //       fontSize: 32, fontWeight: FontWeight.bold, color: Colors.blue),
+        //   headline6: TextStyle(
+        //       fontSize: 18,
+        //       fontWeight: FontWeight.bold,
+        //       color: Colors.blueAccent),
+        //   bodyText2: TextStyle(fontSize: 14, color: Colors.black87),
+        // ),
+        cardTheme: CardTheme(
+          color: Colors.white,
+          shadowColor: Colors.blueAccent,
+          margin: EdgeInsets.all(8),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(8.0),
+          ),
+        ),
+      ),
+      home: FlutterSplashScreen.scale(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Colors.white,
+            Colors.white,
+          ],
+        ),
+        childWidget: SizedBox(
+          height: 800,
+          width: 800,
+          child: Image.asset("assets/satter.png"),
+        ),
+        duration: Duration(milliseconds: 1500),
+        animationDuration: Duration(milliseconds: 1000),
+        nextScreen: Directionality(
+          // textDirection: TextDirection.rtl, child: AuthenticationScreen()),
+          textDirection: TextDirection.rtl,
+          child: LocationPickerScreen(),
+        ),
+      ),
     );
-  }
+
+}
 }
 
 class LocationPickerScreen extends StatefulWidget {
