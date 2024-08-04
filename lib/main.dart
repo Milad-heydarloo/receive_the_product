@@ -1,4 +1,3 @@
-import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
@@ -6,9 +5,9 @@ import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 import 'package:receive_the_product/order.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:auto_size_text/auto_size_text.dart'; // اضافه کردن import
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:background_location/background_location.dart';
-
+import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
 void main() => runApp(const MyApp());
 
