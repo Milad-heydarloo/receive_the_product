@@ -31,7 +31,7 @@ jobs:
 
       # Build the web app
       - name: Build web app
-        run: flutter build web --release
+        run: flutter build web --release --no-tree-shake-icons
 
       # Archive the build output
       - name: Archive production-ready web app
