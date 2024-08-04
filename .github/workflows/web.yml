@@ -1,0 +1,41 @@
+name: 🧿 Build Flutter Web App
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up Flutter SDK
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable  # You can change this to beta or dev if needed
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      # Analyze the project for errors or warnings
+      - name: Analyze project source
+        run: flutter analyze
+
+      # Run tests (if you have any)
+      - name: Run tests
+        run: flutter test
+
+      # Build the web app
+      - name: Build web app
+        run: flutter build web --release
+
+      # Archive the build output
+      - name: Archive production-ready web app
+        uses: actions/upload-artifact@v3
+        with:
+          name: web-build
+          path: build/web
