@@ -1,4 +1,4 @@
-name: 🧿Build Dart Web App
+name: 🧿 Build Flutter Web App
 
 on:
   push:
@@ -13,30 +13,25 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # Set up Dart SDK
-      - uses: dart-lang/setup-dart@v1
+      # Set up Flutter SDK
+      - uses: subosito/flutter-action@v2
         with:
           channel: stable  # You can change this to beta or dev if needed
 
       - name: Install dependencies
-        run: dart pub get
-
-      # Verify formatting (optional)
-      # Uncomment this step to verify the use of 'dart format' on each commit.
-      # - name: Verify formatting
-      #   run: dart format --output=none --set-exit-if-changed .
+        run: flutter pub get
 
       # Analyze the project for errors or warnings
       - name: Analyze project source
-        run: dart analyze
+        run: flutter analyze
 
       # Run tests (if you have any)
       - name: Run tests
-        run: dart test
+        run: flutter test
 
       # Build the web app
       - name: Build web app
-        run: dart run build_runner build --release
+        run: flutter build web --release
 
       # Archive the build output
       - name: Archive production-ready web app
