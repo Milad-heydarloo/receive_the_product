@@ -55,7 +55,7 @@ class OrderController extends GetxController {
       };
 
       final record =
-          await _pb.collection(collectionName).update(location.id, body: body);
+      await _pb.collection(collectionName).update(location.id, body: body);
       if (record != null) {
         // Get.snackbar(
         //   'اطلاعات سفارش برنده',
@@ -114,7 +114,7 @@ class OrderController extends GetxController {
       };
 
       final record =
-          await _pb.collection('listproductb').update(idProduct, body: body);
+      await _pb.collection('listproductb').update(idProduct, body: body);
       if (record != null) {
         Get.snackbar(
           'اطلاعات سفارش برنده',
@@ -176,11 +176,11 @@ class OrderController extends GetxController {
     try {
       while (true) {
         final resultList = await _pb.collection('listproductb').getList(
-              page: page,
-              perPage: 50,
+          page: page,
+          perPage: 50,
           filter: 'expectation = false && okbuy = true',
-              expand: 'supplier', // گسترش اطلاعات تامین‌کننده
-            );
+          expand: 'supplier', // گسترش اطلاعات تامین‌کننده
+        );
 
         if (resultList.items.isEmpty) {
           break;
@@ -210,11 +210,11 @@ class OrderController extends GetxController {
     } catch (error) {
       print('Error fetching products: $error');
     }
-   await ChangeDate(products);
+    await ChangeDate(products);
     return products;
   }
 
- /////////////////////////////////////////////////
+  /////////////////////////////////////////////////
 
   Future<List<LocationSupplierModel>> ChangeDate(List<ProductB> pro) async {
     // نیازی به await برای pro نیست
@@ -284,7 +284,7 @@ class OrderController extends GetxController {
 
     // مقداردهی لیست Datasort
     Datasort = newLocations;
-update(['products']);
+    update(['products']);
     return newLocations;
   }
 
@@ -334,19 +334,19 @@ class ProductB {
 
   ProductB(
       {required this.title,
-      required this.purchaseprice,
-      required this.id,
-      required this.supplier,
-      required this.days,
-      required this.datecreated,
-      required this.dataclearing,
-      required this.number,
-      required this.description,
-      required this.expectation,
-      required this.datead,
-      required this.okbuy,
-      required this.hurry,
-      required this.official});
+        required this.purchaseprice,
+        required this.id,
+        required this.supplier,
+        required this.days,
+        required this.datecreated,
+        required this.dataclearing,
+        required this.number,
+        required this.description,
+        required this.expectation,
+        required this.datead,
+        required this.okbuy,
+        required this.hurry,
+        required this.official});
 
   factory ProductB.fromJson(
       Map<String, dynamic> json, List<Supplier> suppliers) {
@@ -406,11 +406,11 @@ class ProductListSupplier {
   final String number;
   final bool okbuy;
   final bool hurry;
- final RxBool expectation;
+  final RxBool expectation;
 
   ProductListSupplier(
       {required this.IDProduct,
-       required this.title,
+        required this.title,
         required this.number,
         required this.hurry,
         required this.okbuy,

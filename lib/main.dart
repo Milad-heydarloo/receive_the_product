@@ -113,7 +113,7 @@ class MyApp extends StatelessWidget {
       ),
     );
 
-}
+  }
 }
 
 class LocationPickerScreen extends StatefulWidget {
