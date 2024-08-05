@@ -1,22 +1,30 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
-import 'package:receive_the_product/order.dart';
+import 'package:receive_the_product/Getx/auth_controller.dart';
+import 'package:receive_the_product/Getx/routes.dart';
+import 'package:receive_the_product/Getx/order.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:background_location/background_location.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
-void main() => runApp(const MyApp());
-
+void main() async {
+  await GetStorage.init();
+  Get.put(AuthController(), permanent: true); // Ensure AuthController is always in memory
+  runApp(MyApp());
+}
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
+      initialRoute: Routes.splash,
+      getPages: Routes.getPages,
       title: 'دریافت کالا ساتر',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -89,32 +97,68 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-      home: FlutterSplashScreen.scale(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            Colors.white,
-            Colors.white,
-          ],
-        ),
-        childWidget: SizedBox(
-          height: 800,
-          width: 800,
-          child: Image.asset("assets/satter.png"),
-        ),
-        duration: Duration(milliseconds: 1500),
-        animationDuration: Duration(milliseconds: 1000),
-        nextScreen: Directionality(
-          // textDirection: TextDirection.rtl, child: AuthenticationScreen()),
-          textDirection: TextDirection.rtl,
-          child: LocationPickerScreen(),
-        ),
-      ),
+
     );
 
   }
 }
+
+
+
+class SplashPage extends StatefulWidget {
+  @override
+  _SplashPageState createState() => _SplashPageState();
+}
+
+class _SplashPageState extends State<SplashPage> {
+  final AuthController authController = Get.find<AuthController>();
+
+  @override
+  void initState() {
+    super.initState();
+    _navigateAfterSplash();
+  }
+
+  Future<void> _navigateAfterSplash() async {
+    await Future.delayed(Duration(milliseconds: 1500)); // Duration of splash screen
+    final token = GetStorage().read('token');
+    if (token != null) {
+      final isVerified = await authController.checkVerificationStatus(token);
+      if (isVerified) {
+        Get.offAllNamed(Routes.home);
+      } else {
+        Get.offAllNamed(Routes.login);
+      }
+    } else {
+      Get.offAllNamed(Routes.login);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FlutterSplashScreen.scale(
+      gradient: LinearGradient(
+        begin: Alignment.topCenter,
+        end: Alignment.bottomCenter,
+        colors: [Colors.white, Colors.white],
+      ),
+      childWidget: SizedBox(
+        height: 800,
+        width: 800,
+        child: Image.asset("assets/satter.png"),
+      ),
+      duration: Duration(milliseconds: 1500),
+      animationDuration: Duration(milliseconds: 1000),
+
+    );
+  }
+}
+
+
+
+
+
+
 
 class LocationPickerScreen extends StatefulWidget {
   @override
@@ -140,7 +184,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   double _zoom = 18;
 
   final OrderController orderController = Get.put(OrderController());
-
+  final AuthController authController = Get.find<AuthController>();
   List<LocationSupplierModel> locations = [];
   bool _isListOpen = false;
 
@@ -167,10 +211,12 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     );
 
     BackgroundLocation.getLocationUpdates((location) {
+      final user = authController.getUser();
       setState(() {
+
         LocationUser updatedLocation = LocationUser(
           id: '5imz3qage0zszam',
-          user: 'ashi',
+          user: '${user?.username}',
           latitude: location.latitude.toString(),
           longitude: location.longitude.toString(),
         );
@@ -320,6 +366,11 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           IconButton(
             icon: Icon(Icons.map),
             onPressed: _focusOnMarkers,
+          ), IconButton(
+            icon: Icon(Icons.supervised_user_circle),
+            onPressed:    (){
+              Get.toNamed(Routes.profile);
+            } ,
           ),
         ],
         title: const Text('دریافت کالا ساتر'),
@@ -364,7 +415,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                           bool hasHurryProduct = locationModel.listPS
                               .any((product) => product.hurry);
                           return Marker(
-                            width: calculateTextWidth(locationModel.companyname+'نام مجموعه : ') + 59,
+                            width: calculateTextWidth(locationModel.companyname+'نام مجموعه : ') + 70,
 
                             height: 150,
                             point: locationModel.position,

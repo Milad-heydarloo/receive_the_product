@@ -21,6 +21,9 @@ dependencies:
   url_launcher: ^6.0.20
   another_flutter_splash_screen: ^1.2.0
 
+  get_storage: ^2.1.1
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
