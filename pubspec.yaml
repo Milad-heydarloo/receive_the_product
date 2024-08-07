@@ -20,7 +20,7 @@ dependencies:
   background_location: ^0.13.0
   url_launcher: ^6.0.20
   another_flutter_splash_screen: ^1.2.0
-
+  win32: 5.0.0
   get_storage: ^2.1.1
 
 
