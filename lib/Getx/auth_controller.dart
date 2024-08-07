@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:pocketbase/pocketbase.dart';
@@ -68,10 +69,10 @@ class AuthController extends GetxController {
         setUser(user);
         Get.offAllNamed('/home');
       } else {
-        Get.snackbar('Error', 'You are not verified');
+        Get.snackbar('مشکل', 'شما مجاز به ورود نیستین',backgroundColor: Colors.red);
       }
     } catch (e) {
-      Get.snackbar('Error', 'Invalid email or password');
+      Get.snackbar('مشکل', 'ایمیل یا پسورد به درستی وارد نشده',backgroundColor: Colors.red);
     }
   }
 
@@ -115,11 +116,11 @@ class AuthController extends GetxController {
         // وضعیت تأیید درست است
         check = true;
         // اطلاعات کاربر را به روز کنید و به صفحه خانه هدایت کنید (اختیاری)
-        // box.write('user', fetchedUserJson); // ذخیره اطلاعات کاربر به جای توکن
-        // setUser(user);
-        // Get.offAllNamed('/home');
+        box.write('user', fetchedUserJson); // ذخیره اطلاعات کاربر به جای توکن
+        setUser(user);
+        Get.offAllNamed('/home');
       } else {
-        Get.snackbar('Error', 'You are not verified');
+        Get.snackbar('Error', 'شما مجاز نیست');
       }
     } catch (e) {
       Get.snackbar('Error', 'Invalid email or password');

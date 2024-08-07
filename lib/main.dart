@@ -7,7 +7,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:get/get.dart';
+import 'package:receive_the_product/Getx/Drawer/DrawerController.dart';
+
+import 'package:receive_the_product/Getx/Drawer/MyDrawer.dart';
 import 'package:receive_the_product/Getx/auth_controller.dart';
 import 'package:receive_the_product/Getx/routes.dart';
 import 'package:receive_the_product/Getx/order.dart';
@@ -16,12 +18,14 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:background_location/background_location.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
-import 'Getx/user_model.dart';
+
 
 void main() async {
   await GetStorage.init();
   Get.put(AuthController(),
+
       permanent: true); // Ensure AuthController is always in memory
+  Get.put(MyDrawerController());
   runApp(MyApp());
 }
 
@@ -336,9 +340,16 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
   @override
   Widget build(BuildContext context) {
+
     return Scaffold(
 
       appBar: AppBar(
+        leading: Builder(
+          builder: (context) => IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () => Scaffold.of(context).openDrawer(),
+          ),
+        ),
         actions: [
           IconButton(
             icon: Icon(
@@ -351,17 +362,17 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             icon: Icon(Icons.map),
             onPressed: _focusOnMarkers,
           ),
-          IconButton(
-            icon: Icon(Icons.supervised_user_circle),
-            onPressed: ()   {
-
-
-
-                Get.toNamed(Routes.profile);
-
-
-            },
-          ),
+          // IconButton(
+          //   icon: Icon(Icons.supervised_user_circle),
+          //   onPressed: ()   {
+          //
+          //
+          //
+          //       Get.toNamed(Routes.profile);
+          //
+          //
+          //   },
+          // ),
         ],
         title: const Text('دریافت کالا ساتر'),
       ),
@@ -629,6 +640,11 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           )
         ],
       ),
+     drawer:  MyDrawer(
+
+     ),
+
+
     );
   }
 
