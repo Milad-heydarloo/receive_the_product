@@ -323,6 +323,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   }
 
   void _startLocationUpdates() {
+    final user = authController.getUser();
     Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.medium,
@@ -333,7 +334,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
         LocationUser location = LocationUser(
             id: '5imz3qage0zszam',
-            user: 'ashi',
+            user:  '${user?.username}',
             latitude: position.latitude.toString(),
             longitude: position.longitude.toString());
         orderController.updateLocation(location);
