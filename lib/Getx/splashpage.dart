@@ -1,9 +1,9 @@
-import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
-import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get_storage/get_storage.dart';
-import 'package:receive_the_product/Getx/auth_controller.dart';
-import 'package:receive_the_product/Getx/routes.dart';
+// import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:get_storage/get_storage.dart';
+// import 'package:receive_the_product/Getx/auth_controller.dart';
+// import 'package:receive_the_product/Getx/routes.dart';
 
 //
 // class SplashPage extends StatelessWidget {
