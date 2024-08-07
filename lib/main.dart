@@ -1,4 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_storage/get_storage.dart';
@@ -12,11 +16,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:background_location/background_location.dart';
 import 'package:another_flutter_splash_screen/another_flutter_splash_screen.dart';
 
+import 'Getx/user_model.dart';
+
 void main() async {
   await GetStorage.init();
-  Get.put(AuthController(), permanent: true); // Ensure AuthController is always in memory
+  Get.put(AuthController(),
+      permanent: true); // Ensure AuthController is always in memory
   runApp(MyApp());
 }
+
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
@@ -97,68 +105,59 @@ class MyApp extends StatelessWidget {
           ),
         ),
       ),
-
     );
-
   }
 }
 
 
-
-class SplashPage extends StatefulWidget {
+class SplashPages extends StatefulWidget {
   @override
-  _SplashPageState createState() => _SplashPageState();
+  _SplashPagesState createState() => _SplashPagesState();
 }
 
-class _SplashPageState extends State<SplashPage> {
+class _SplashPagesState extends State<SplashPages> {
   final AuthController authController = Get.find<AuthController>();
 
-  @override
-  void initState() {
-    super.initState();
-    _navigateAfterSplash();
-  }
 
-  Future<void> _navigateAfterSplash() async {
-    await Future.delayed(Duration(milliseconds: 1500)); // Duration of splash screen
-    final token = GetStorage().read('token');
-    if (token != null) {
-      final isVerified = await authController.checkVerificationStatus(token);
-      if (isVerified) {
-        Get.offAllNamed(Routes.home);
-      } else {
-        Get.offAllNamed(Routes.login);
-      }
-    } else {
-      Get.offAllNamed(Routes.login);
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
-    return FlutterSplashScreen.scale(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white, Colors.white],
-      ),
-      childWidget: SizedBox(
-        height: 800,
-        width: 800,
-        child: Image.asset("assets/satter.png"),
-      ),
-      duration: Duration(milliseconds: 1500),
-      animationDuration: Duration(milliseconds: 1000),
 
+    return Scaffold(
+      body: Center(
+        child: SizedBox(
+          height: 800,
+          width: 800,
+          child: FlutterSplashScreen.scale(
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [Colors.white, Colors.white],
+            ),
+            childWidget: Image.asset("assets/satter.png"),
+            duration: Duration(milliseconds: 1500),
+            animationDuration: Duration(milliseconds: 1000),
+
+            onEnd: () async {
+              await Future.delayed(Duration(seconds: 2));
+              bool user = await authController.checkVerificationStatus();
+
+              if (user) {
+                Get.offAllNamed(Routes.home);
+              } else {
+                authController.clearUser();
+                Get.offAllNamed(Routes.login);
+              }
+
+            },
+
+          ),
+        ),
+      ),
     );
+
   }
 }
-
-
-
-
-
-
 
 class LocationPickerScreen extends StatefulWidget {
   @override
@@ -166,18 +165,9 @@ class LocationPickerScreen extends StatefulWidget {
 }
 
 class _LocationPickerScreenState extends State<LocationPickerScreen> {
-
   ///////
 
-
-
-
-
-
-
-
   ////////
-
 
   Position? _currentPosition;
   late MapController _mapController;
@@ -197,8 +187,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     _initializeBackgroundLocation();
   }
 
-
-
   void _initializeBackgroundLocation() async {
     // درخواست مجوز دسترسی به موقعیت مکانی
     await BackgroundLocation.startLocationService();
@@ -213,7 +201,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
     BackgroundLocation.getLocationUpdates((location) {
       final user = authController.getUser();
       setState(() {
-
         LocationUser updatedLocation = LocationUser(
           id: '5imz3qage0zszam',
           user: '${user?.username}',
@@ -221,9 +208,6 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           longitude: location.longitude.toString(),
         );
         orderController.updateLocation(updatedLocation);
-
-
-
       });
 
       print("Updated location: ${location.latitude}, ${location.longitude}");
@@ -232,10 +216,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
 
   @override
   void dispose() {
-    BackgroundLocation.stopLocationService(); // توقف بروزرسانی موقعیت مکانی هنگام خروج از برنامه
+    BackgroundLocation
+        .stopLocationService(); // توقف بروزرسانی موقعیت مکانی هنگام خروج از برنامه
     super.dispose();
   }
-
 
   void _getCurrentLocation() async {
     await orderController.FetchProductsAndSupplier();
@@ -316,6 +300,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   late String apikey =
       'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6ImMzNjVkMDg2NjdmMzgxZDY1ZmI2NzU0ODcwNDJmZTQ1M2I1MzgxODEyMWY5YTE2OTIwNjFlNDY2NDA2MmNlYzE0NjZmNzIzZDEzMzk4NTk1In0.eyJhdWQiOiIyODIxMyIsImp0aSI6ImMzNjVkMDg2NjdmMzgxZDY1ZmI2NzU0ODcwNDJmZTQ1M2I1MzgxODEyMWY5YTE2OTIwNjFlNDY2NDA2MmNlYzE0NjZmNzIzZDEzMzk4NTk1IiwiaWF0IjoxNzIxOTQwODg3LCJuYmYiOjE3MjE5NDA4ODcsImV4cCI6MTcyNDUzMjg4Nywic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.P-HVICCEemigM5vv_lYuxVogPRp3_Tpa1-6zJWONRJ9BfsWXKd4B6FPgnxmJg1wkSGOXc_GFFoeZuFrf9nRfJzwdofkbFbI9yrtWWMATW2PIY8zjd_2SoZ4O94HE-AfyPOO4Dq_V7TJV1xiGinIJdyFCCfMBAuxN-2p8etP5UF2R6r9gDqxXpeVXiHbDx2zB9nTpONG_rlCi26SJ4Y63rDhsAOppdW6v0bP8bF7wkcOJ_z2lwzaWpcOnvJ0uP0cnYc_y9MiINw_P0g79MWMV-ntFNaaj_LU5G_kvSb9y0uWbmFrPgLoEgRFkdkRK2OEAORd9b5ux_iJGnkYV39UHPQ';
   bool _isTrackingEnabled = false;
+
   void _toggleTracking() {
     setState(() {
       _isTrackingEnabled = !_isTrackingEnabled;
@@ -323,7 +308,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   }
 
   void _startLocationUpdates() {
-    final user = authController.getUser();
+
     Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.medium,
@@ -331,10 +316,9 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       ),
     ).listen((Position position) {
       setState(() {
-
         LocationUser location = LocationUser(
             id: '5imz3qage0zszam',
-            user:  '${user?.username}',
+            user: 'ashi',
             latitude: position.latitude.toString(),
             longitude: position.longitude.toString());
         orderController.updateLocation(location);
@@ -345,9 +329,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
             _zoom,
           );
         }
-      }
-
-      );
+      });
       print("Updated location: ${position.latitude}, ${position.longitude}");
     });
   }
@@ -355,6 +337,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+
       appBar: AppBar(
         actions: [
           IconButton(
@@ -367,11 +350,17 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
           IconButton(
             icon: Icon(Icons.map),
             onPressed: _focusOnMarkers,
-          ), IconButton(
+          ),
+          IconButton(
             icon: Icon(Icons.supervised_user_circle),
-            onPressed:    (){
-              Get.toNamed(Routes.profile);
-            } ,
+            onPressed: ()   {
+
+
+
+                Get.toNamed(Routes.profile);
+
+
+            },
           ),
         ],
         title: const Text('دریافت کالا ساتر'),
@@ -396,7 +385,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   children: [
                     TileLayer(
                       urlTemplate:
-                      "https://map.ir/shiveh/xyz/1.0.0/Shiveh:Shiveh@EPSG:3857@png/{z}/{x}/{y}.png?x-api-key=${apikey}",
+                          "https://map.ir/shiveh/xyz/1.0.0/Shiveh:Shiveh@EPSG:3857@png/{z}/{x}/{y}.png?x-api-key=${apikey}",
                     ),
                     MarkerLayer(
                       markers: [
@@ -406,7 +395,8 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                           point: LatLng(_currentPosition!.latitude,
                               _currentPosition!.longitude),
                           child: Icon(
-                            Icons.my_location, // A different location-related icon
+                            Icons.my_location,
+                            // A different location-related icon
                             size: 50.0,
                             color: Colors.blue,
                           ),
@@ -416,8 +406,10 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                           bool hasHurryProduct = locationModel.listPS
                               .any((product) => product.hurry);
                           return Marker(
-                            width: calculateTextWidth(locationModel.companyname+'نام مجموعه : ') + 70,
-
+                            width: calculateTextWidth(
+                                    locationModel.companyname +
+                                        'نام مجموعه : ') +
+                                70,
                             height: 150,
                             point: locationModel.position,
                             child: GestureDetector(
@@ -435,7 +427,7 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                                           child: Card(
                                             child: Padding(
                                               padding:
-                                              const EdgeInsets.all(8.0),
+                                                  const EdgeInsets.all(8.0),
                                               child: Row(
                                                 mainAxisSize: MainAxisSize.min,
                                                 children: [
@@ -447,16 +439,18 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                                                     size: 20,
                                                   ),
                                                   SizedBox(width: 4),
-                                                  AutoSizeText('نام مجموعه : '+
-                                                      locationModel.companyname,
+                                                  AutoSizeText(
+                                                    'نام مجموعه : ' +
+                                                        locationModel
+                                                            .companyname,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontWeight:
-                                                      FontWeight.bold,
+                                                          FontWeight.bold,
                                                     ),
                                                     maxLines: 1,
                                                     overflow:
-                                                    TextOverflow.ellipsis,
+                                                        TextOverflow.ellipsis,
                                                   ),
                                                 ],
                                               ),
@@ -484,10 +478,15 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
               }
             },
           ),
+
           Positioned(
             bottom: 50,
             right: 10,
-            child: Column(
+            child:
+
+
+
+            Column(
               children: [
                 FloatingActionButton(
                   onPressed: _zoomIn,
@@ -528,101 +527,101 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                   // اگر باز باشد ارتفاع براساس محتوا
                   constraints: _isListOpen
                       ? BoxConstraints(
-                    maxHeight: MediaQuery.of(context).size.height *
-                        0.7, // حداکثر ارتفاع
-                  )
+                          maxHeight: MediaQuery.of(context).size.height *
+                              0.7, // حداکثر ارتفاع
+                        )
                       : BoxConstraints(),
                   color: Colors.white.withOpacity(0.9),
                   child: _isListOpen
                       ? SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        ...orderController.Datasort.map((locationModel) {
-                          bool hasHurryProduct = locationModel.listPS
-                              .any((product) => product.hurry);
-                          return ExpansionTile(
-                            title: ListTile(
-                              leading: Icon(
-                                Icons.circle,
-                                color: hasHurryProduct
-                                    ? Colors.blue
-                                    : Colors.grey,
-                                size: 20,
-                              ),
-                              title: Text(
-                                locationModel.companyname,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              subtitle: Text(locationModel.address),
-                              onTap: () {
-                                _mapController.move(
-                                    locationModel.position,
-                                    15.0); // حرکت نقشه به موقعیت
-                              },
-                            ),
-                            children: locationModel.listPS.map((product) {
-                              return Card(
-                                margin: EdgeInsets.symmetric(
-                                    horizontal: 16, vertical: 8),
-                                child: ListTile(
-                                  title: Text(
-                                    "نام کالا: ${product.title}",
-                                    style: TextStyle(fontSize: 14),
+                          child: Column(
+                            children: [
+                              ...orderController.Datasort.map((locationModel) {
+                                bool hasHurryProduct = locationModel.listPS
+                                    .any((product) => product.hurry);
+                                return ExpansionTile(
+                                  title: ListTile(
+                                    leading: Icon(
+                                      Icons.circle,
+                                      color: hasHurryProduct
+                                          ? Colors.blue
+                                          : Colors.grey,
+                                      size: 20,
+                                    ),
+                                    title: Text(
+                                      locationModel.companyname,
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.bold),
+                                    ),
+                                    subtitle: Text(locationModel.address),
+                                    onTap: () {
+                                      _mapController.move(
+                                          locationModel.position,
+                                          15.0); // حرکت نقشه به موقعیت
+                                    },
                                   ),
-                                  subtitle: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        "تعداد کالا جهت دریافت: ${product.number}",
-                                        style: TextStyle(fontSize: 14),
+                                  children: locationModel.listPS.map((product) {
+                                    return Card(
+                                      margin: EdgeInsets.symmetric(
+                                          horizontal: 16, vertical: 8),
+                                      child: ListTile(
+                                        title: Text(
+                                          "نام کالا: ${product.title}",
+                                          style: TextStyle(fontSize: 14),
+                                        ),
+                                        subtitle: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              "تعداد کالا جهت دریافت: ${product.number}",
+                                              style: TextStyle(fontSize: 14),
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.circle,
+                                                    color: product.hurry
+                                                        ? Colors.blue
+                                                        : Colors.grey),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "عجله دار",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: product.hurry
+                                                          ? Colors.blue
+                                                          : Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              children: [
+                                                Icon(Icons.circle,
+                                                    color: product.okbuy
+                                                        ? Colors.green
+                                                        : Colors.grey),
+                                                SizedBox(width: 5),
+                                                Text(
+                                                  "رزرو شده جهت دریافت",
+                                                  style: TextStyle(
+                                                      fontSize: 14,
+                                                      color: product.okbuy
+                                                          ? Colors.green
+                                                          : Colors.grey),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
                                       ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.circle,
-                                              color: product.hurry
-                                                  ? Colors.blue
-                                                  : Colors.grey),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            "عجله دار",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: product.hurry
-                                                    ? Colors.blue
-                                                    : Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                      Row(
-                                        children: [
-                                          Icon(Icons.circle,
-                                              color: product.okbuy
-                                                  ? Colors.green
-                                                  : Colors.grey),
-                                          SizedBox(width: 5),
-                                          Text(
-                                            "رزرو شده جهت دریافت",
-                                            style: TextStyle(
-                                                fontSize: 14,
-                                                color: product.okbuy
-                                                    ? Colors.green
-                                                    : Colors.grey),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                          );
-                        }).toList(),
-                      ],
-                    ),
-                  )
+                                    );
+                                  }).toList(),
+                                );
+                              }).toList(),
+                            ],
+                          ),
+                        )
                       : null,
                 ),
               ],
@@ -729,28 +728,28 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
                             ),
                             SizedBox(height: 10),
                             Obx(() => Row(
-                              children: [
-                                Text(
-                                  "دریافت شد کالا ؟ :",
-                                  style: TextStyle(fontSize: 16),
-                                ),
-                                Switch(
-                                  value: product.expectation.value,
-                                  onChanged: (value) {
-                                    product.expectation.value = value;
-                                    orderController
-                                        .updateProduct(product.IDProduct);
+                                  children: [
+                                    Text(
+                                      "دریافت شد کالا ؟ :",
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                    Switch(
+                                      value: product.expectation.value,
+                                      onChanged: (value) {
+                                        product.expectation.value = value;
+                                        orderController
+                                            .updateProduct(product.IDProduct);
 
-                                    bool allReceived = locationModel.listPS
-                                        .every((p) => p.expectation.value);
+                                        bool allReceived = locationModel.listPS
+                                            .every((p) => p.expectation.value);
 
-                                    if (allReceived) {
-                                      Navigator.of(context).pop();
-                                    }
-                                  },
-                                ),
-                              ],
-                            )),
+                                        if (allReceived) {
+                                          Navigator.of(context).pop();
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                )),
                             Divider(),
                           ],
                         ),
@@ -765,15 +764,19 @@ class _LocationPickerScreenState extends State<LocationPickerScreen> {
       ),
     );
   }
+
   double calculateTextWidth(String text) {
     final TextPainter textPainter = TextPainter(
-      text: TextSpan(text: text, ),
+      text: TextSpan(
+        text: text,
+      ),
       maxLines: 1,
       textDirection: TextDirection.rtl,
     )..layout(minWidth: 0, maxWidth: double.infinity);
 
     return textPainter.size.width;
   }
+
   void _makePhoneCall(String phoneNumber) async {
     final Uri launchUri = Uri(
       scheme: 'tel',

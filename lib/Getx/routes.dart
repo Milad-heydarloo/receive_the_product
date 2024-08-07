@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:receive_the_product/Getx/testGetx/homepage.dart';
+
 import 'package:receive_the_product/Getx/loginpage.dart';
 import 'package:receive_the_product/Getx/profile_page.dart';
 
@@ -16,9 +16,9 @@ class Routes {
 
   static List<GetPage> getPages = [
     GetPage(name: home, page: () => LocationPickerScreen()),
-    GetPage(name: profile, page: () => ProfilePage()),
+    GetPage(name: profile, page: () => ProfilePages()),
     GetPage(name: login, page: () => LoginPage()),
-    GetPage(name: splash, page: () => SplashPage()),
+    GetPage(name: splash, page: () => SplashPages()),
   ];
 }
 

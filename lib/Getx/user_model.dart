@@ -3,6 +3,7 @@ import 'dart:convert';
 class User {
   String id;
   String username;
+  String password;
   bool verified;
   String email;
   String name;
@@ -13,6 +14,7 @@ class User {
   User({
     required this.id,
     required this.username,
+    required this.password,
     required this.verified,
     required this.email,
     required this.name,
@@ -24,6 +26,7 @@ class User {
   factory User.fromJson(Map<String, dynamic> json) => User(
     id: json['id'] ?? '',
     username: json['username'] ?? '',
+    password: json['password'] ?? '',
     verified: json['verified'] ?? false,
     email: json['email'] ?? '',
     name: json['name'] ?? '',
@@ -35,6 +38,7 @@ class User {
   Map<String, dynamic> toJson() => {
     'id': id,
     'username': username,
+    'password': password,
     'verified': verified,
     'email': email,
     'name': name,

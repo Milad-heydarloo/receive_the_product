@@ -26,53 +26,58 @@ import 'package:receive_the_product/Getx/routes.dart';
 //   }
 // }
 
-
-
-class SplashPage extends StatefulWidget {
-  @override
-  _SplashPageState createState() => _SplashPageState();
-}
-
-class _SplashPageState extends State<SplashPage> {
-  final AuthController authController = Get.find<AuthController>();
-
-  @override
-  void initState() {
-    super.initState();
-    _navigateAfterSplash();
-  }
-
-  Future<void> _navigateAfterSplash() async {
-    await Future.delayed(Duration(milliseconds: 1500)); // Duration of splash screen
-    final token = GetStorage().read('token');
-    if (token != null) {
-      final isVerified = await authController.checkVerificationStatus(token);
-      if (isVerified) {
-        Get.offAllNamed(Routes.home);
-      } else {
-        Get.offAllNamed(Routes.login);
-      }
-    } else {
-      Get.offAllNamed(Routes.login);
-    }
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FlutterSplashScreen.scale(
-      gradient: LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Colors.white, Colors.white],
-      ),
-      childWidget: SizedBox(
-        height: 800,
-        width: 800,
-        child: Image.asset("assets/satter.png"),
-      ),
-      duration: Duration(milliseconds: 1500),
-      animationDuration: Duration(milliseconds: 1000),
-
-    );
-  }
-}
+// class SplashPage extends StatefulWidget {
+//   @override
+//   _SplashPageState createState() => _SplashPageState();
+// }
+//
+// class _SplashPageState extends State<SplashPage> {
+//   final AuthController authController = Get.find<AuthController>();
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _navigateAfterSplash();
+//   }
+//
+//   Future<void> _navigateAfterSplash() async {
+//     await Future.delayed(Duration(milliseconds: 1500)); // Duration of splash screen
+//
+//     // Ensure no navigation operation is ongoing
+//     if (!Get.isOverlaysOpen) {
+//       bool user = await authController.checkVerificationStatus();
+//       if (user != null) {
+//         if (user) {
+//           Get.offAllNamed(Routes.home);
+//         } else {
+//           authController.clearUser();
+//           Get.offAllNamed(Routes.login);
+//         }
+//       } else {
+//         Get.offAllNamed(Routes.login);
+//       }
+//     }
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: Center(
+//         child: SizedBox(
+//           height: 800,
+//           width: 800,
+//           child: FlutterSplashScreen.scale(
+//             gradient: LinearGradient(
+//               begin: Alignment.topCenter,
+//               end: Alignment.bottomCenter,
+//               colors: [Colors.white, Colors.white],
+//             ),
+//             childWidget: Image.asset("assets/satter.png"),
+//             duration: Duration(milliseconds: 1500),
+//             animationDuration: Duration(milliseconds: 1000),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

@@ -2,16 +2,22 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:pocketbase/pocketbase.dart';
-
 import 'package:http/http.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:get/get.dart';
 
-Client getClient() {
+/////////////////////////////////////////////////
+
+  Client getClient() {
   return Client();
 }
 
-class OrderController extends GetxController {
+/////////////////////////////////////////////////
+
+  class OrderController extends GetxController {
+
+/////////////////////////////////////////////////
+
   final PocketBase _pb = PocketBase(
     const String.fromEnvironment('order',
         defaultValue: 'https://saater.liara.run'),
@@ -19,9 +25,7 @@ class OrderController extends GetxController {
     httpClientFactory: kIsWeb ? () => getClient() : null,
   );
 
-
-
-  /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
   List<LocationSupplierModel> Datasort = [];
 
@@ -43,7 +47,7 @@ class OrderController extends GetxController {
     super.onClose();
   }
 
-  /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
   final String collectionName = 'location';
 
@@ -54,8 +58,7 @@ class OrderController extends GetxController {
         "longitude": location.longitude,
       };
 
-      final record =
-      await _pb.collection(collectionName).update(location.id, body: body);
+      final record = await _pb.collection(collectionName).update(location.id, body: body);
       if (record != null) {
         // Get.snackbar(
         //   'اطلاعات سفارش برنده',
@@ -114,7 +117,8 @@ class OrderController extends GetxController {
       };
 
 
-      
+
+
       final record =
       await _pb.collection('listproductb').update(idProduct, body: body);
       if (record != null) {
@@ -216,7 +220,7 @@ class OrderController extends GetxController {
     return products;
   }
 
-  /////////////////////////////////////////////////
+/////////////////////////////////////////////////
 
   Future<List<LocationSupplierModel>> ChangeDate(List<ProductB> pro) async {
     // نیازی به await برای pro نیست
@@ -294,7 +298,7 @@ class OrderController extends GetxController {
 
 /////////////////////////////////////////////////
 
-class LocationUser {
+  class LocationUser {
   final String id;
   final String user;
   final String latitude;
@@ -318,7 +322,7 @@ class LocationUser {
   }
 }
 
-class ProductB {
+  class ProductB {
   final String id;
   final String title;
   final String purchaseprice;
@@ -371,7 +375,7 @@ class ProductB {
   }
 }
 
-class Supplier {
+  class Supplier {
   final String id;
   final String companyname;
   final String phonenumber;
@@ -402,7 +406,7 @@ class Supplier {
 
 /////////////////////////////////////////////////
 
-class ProductListSupplier {
+  class ProductListSupplier {
   final String IDProduct;
   final String title;
   final String number;
@@ -420,7 +424,7 @@ class ProductListSupplier {
       }) : expectation = RxBool(expectation); // Initialize RxBool
 }
 
-class LocationSupplierModel {
+  class LocationSupplierModel {
   final List<ProductListSupplier> listPS;
   final String idSupplier;
   final String companyname;
